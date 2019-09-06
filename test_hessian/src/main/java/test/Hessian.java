@@ -20,55 +20,65 @@ import com.caucho.hessian.test.TestHessian2Servlet;
 
 import java.lang.reflect.Method;
 
-
 public class Hessian {
-    public static void main(String[] args) throws Exception {
-        if (args.length > 1) {
-            testCustomClassMethod(args[0], args[1]);
-            return;
-        }
-
-        if (args[0].startsWith("reply")) {
-            Method method = TestHessian2Servlet.class.getMethod(args[0]);
-            TestHessian2Servlet servlet = new TestHessian2Servlet();
-            Object object = method.invoke(servlet);
-
-            Hessian2Output output = new Hessian2Output(System.out);
-            output.writeObject(object);
-            output.flush();
-        } else if (args[0].startsWith("customReply")) {
-            Method method = TestCustomReply.class.getMethod(args[0]);
-            TestCustomReply testCustomReply = new TestCustomReply(System.out);
-            method.invoke(testCustomReply);
-        } else if (args[0].startsWith("arg")) {
-            Hessian2Input input = new Hessian2Input(System.in);
-            Object o = input.readObject();
-
-            Method method = TestHessian2Servlet.class.getMethod(args[0], Object.class);
-            TestHessian2Servlet servlet = new TestHessian2Servlet();
-            System.out.print(method.invoke(servlet, o));
-        } else if (args[0].startsWith("customArg")) {
-            Method method = TestCustomDecode.class.getMethod(args[0]);
-            TestCustomDecode testCustomDecode = new TestCustomDecode(System.in);
-            System.out.print(method.invoke(testCustomDecode));
-        } else if (args[0].startsWith("throw_")) {
-            Method method = method = TestThrowable.class.getMethod(args[0]);
-            TestHessian2Servlet servlet = new TestHessian2Servlet();
-            Object object = method.invoke(servlet);
-
-            Hessian2Output output = new Hessian2Output(System.out);
-            output.writeObject(object);
-            output.flush();
-        }
+  public static void main(String[] args) throws Exception {
+    if (args.length > 1) {
+      testCustomClassMethod(args[0], args[1]);
+      return;
     }
-
-    private static void testCustomClassMethod(String methodName, String className) throws Exception {
-        Class<?> clazz = Class.forName(className);
-        Method method = clazz.getMethod(methodName);
-        Object target = clazz.newInstance();
-        Object result = method.invoke(target);
-        Hessian2Output output = new Hessian2Output(System.out);
-        output.writeObject(result);
-        output.flush();
+    if (args[0].startsWith("replyString_emoji")) {
+      Hessian2Output output = new Hessian2Output(System.out);
+      String object = new String("emoji🤣");
+      output.writeObject(object);
+      output.flush();
+      return;
+    } else if (args[0].startsWith("argString_emoji")) {
+        Hessian2Input input = new Hessian2Input(System.in);
+        Object o = input.readObject();
+        System.out.print(o);
+      return;
     }
+    if (args[0].startsWith("reply")) {
+      Method method = TestHessian2Servlet.class.getMethod(args[0]);
+      TestHessian2Servlet servlet = new TestHessian2Servlet();
+      Object object = method.invoke(servlet);
+
+      Hessian2Output output = new Hessian2Output(System.out);
+      output.writeObject(object);
+      output.flush();
+    } else if (args[0].startsWith("customReply")) {
+      Method method = TestCustomReply.class.getMethod(args[0]);
+      TestCustomReply testCustomReply = new TestCustomReply(System.out);
+      method.invoke(testCustomReply);
+    } else if (args[0].startsWith("arg")) {
+      Hessian2Input input = new Hessian2Input(System.in);
+      Object o = input.readObject();
+
+      Method method = TestHessian2Servlet.class.getMethod(args[0], Object.class);
+      TestHessian2Servlet servlet = new TestHessian2Servlet();
+      System.out.print(method.invoke(servlet, o));
+    } else if (args[0].startsWith("customArg")) {
+      Method method = TestCustomDecode.class.getMethod(args[0]);
+      TestCustomDecode testCustomDecode = new TestCustomDecode(System.in);
+      System.out.print(method.invoke(testCustomDecode));
+    } else if (args[0].startsWith("throw_")) {
+      Method method = method = TestThrowable.class.getMethod(args[0]);
+      TestHessian2Servlet servlet = new TestHessian2Servlet();
+      Object object = method.invoke(servlet);
+
+      Hessian2Output output = new Hessian2Output(System.out);
+      output.writeObject(object);
+      output.flush();
+    }
+  }
+
+  private static void testCustomClassMethod(String methodName, String className) throws Exception {
+    Class<?> clazz = Class.forName(className);
+    Method method = clazz.getMethod(methodName);
+    Object target = clazz.newInstance();
+    Object result = method.invoke(target);
+    Hessian2Output output = new Hessian2Output(System.out);
+    output.writeObject(result);
+    output.flush();
+  }
 }
