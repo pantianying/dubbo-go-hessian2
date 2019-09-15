@@ -353,6 +353,12 @@ public class TestCustomReply {
         output.flush();
     }
 
+    public void customReplyEmoji() throws Exception {
+        String s = "emoji🤣表情";
+        output.writeObject(s);
+        output.flush();
+    }
+
 }
 
 class TypedListTest implements Serializable {

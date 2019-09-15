@@ -141,3 +141,11 @@ func TestStringEncode(t *testing.T) {
 	testJavaDecode(t, "argString_32", s32)
 	testJavaDecode(t, "argString_65536", s65560[:65536])
 }
+
+func TestStringEmoji(t *testing.T) {
+	s0 := "emoji🤣表情"
+	b := []rune(s0)
+	fmt.Println(b)
+	testDecodeFramework(t, "customReplyEmoji", s0)
+	//testJavaDecode(t, "customArgEmoji", s0)
+}
