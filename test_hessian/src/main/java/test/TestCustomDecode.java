@@ -174,4 +174,9 @@ public class TestCustomDecode {
         DateDemo o = (DateDemo) input.readObject();
         return o.getDate() == null && o.getDate1() == null;
     }
+
+    public Object customArgEmoji() throws Exception {
+        String o = (String) input.readObject();
+        return o.equals("emoji🤣emoji");
+    }
 }

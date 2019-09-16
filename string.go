@@ -233,11 +233,86 @@ func (d *Decoder) decString(flag int32) (string, error) {
 				}
 
 			} else {
-				r, _, err = d.reader.ReadRune()
+				r1, err := d.reader.ReadByte()
 				if err != nil {
 					return s, perrors.WithStack(err)
 				}
-				runeDate[i] = r
+				if r1 < 0x80 {
+					r = rune(r1)
+				} else if (r1 & 0xe0) == 0xc0 {
+					r2, err := d.reader.ReadByte()
+					if err != nil {
+						return s, perrors.WithStack(err)
+					}
+					r = rune(((int32(r1) & 0x1f) << 6) + (int32(r2) & 0x3f))
+				} else if (r1 & 0xf0) == 0xe0 {
+					r2, err := d.reader.ReadByte()
+					if err != nil {
+						return s, perrors.WithStack(err)
+					}
+					r3, err := d.reader.ReadByte()
+					if err != nil {
+						return s, perrors.WithStack(err)
+					}
+					r = rune(((int32(r1) & 0x0f) << 12) + ((int32(r2) & 0x3f) << 6) + (int32(r3) & 0x3f))
+				} else if (r1 & 0xf8) == 0xf0 {
+					r2, err := d.reader.ReadByte()
+					if err != nil {
+						return s, perrors.WithStack(err)
+					}
+					r3, err := d.reader.ReadByte()
+					if err != nil {
+						return s, perrors.WithStack(err)
+					}
+					r4, err := d.reader.ReadByte()
+					if err != nil {
+						return s, perrors.WithStack(err)
+					}
+					r = rune(((int32(r1) & 0x07) << 18) + ((int32(r2) & 0x3f) << 6) + (int32(r3) & 0x3f) + (int32(r4) & 0x3f))
+				} else if (r1 & 0xfc) == 0xf8 {
+					r2, err := d.reader.ReadByte()
+					if err != nil {
+						return s, perrors.WithStack(err)
+					}
+					r3, err := d.reader.ReadByte()
+					if err != nil {
+						return s, perrors.WithStack(err)
+					}
+					r4, err := d.reader.ReadByte()
+					if err != nil {
+						return s, perrors.WithStack(err)
+					}
+					r5, err := d.reader.ReadByte()
+					if err != nil {
+						return s, perrors.WithStack(err)
+					}
+					r = rune(((int32(r1) & 0x03) << 24) + ((int32(r2) & 0x3f) << 6) + (int32(r3) & 0x3f) +
+						(int32(r4) & 0x3f) + (int32(r5) & 0x3f))
+				} else if (r1 & 0xfd) == 0xfc {
+					r2, err := d.reader.ReadByte()
+					if err != nil {
+						return s, perrors.WithStack(err)
+					}
+					r3, err := d.reader.ReadByte()
+					if err != nil {
+						return s, perrors.WithStack(err)
+					}
+					r4, err := d.reader.ReadByte()
+					if err != nil {
+						return s, perrors.WithStack(err)
+					}
+					r5, err := d.reader.ReadByte()
+					if err != nil {
+						return s, perrors.WithStack(err)
+					}
+					r6, err := d.reader.ReadByte()
+					if err != nil {
+						return s, perrors.WithStack(err)
+					}
+					r = rune(((int32(r1) & 0x03) << 30) + ((int32(r2) & 0x3f) << 6) + (int32(r3) & 0x3f) +
+						(int32(r4) & 0x3f) + (int32(r5) & 0x3f) + (int32(r6) & 0x3f))
+				}
+				runeDate[i] = rune(r)
 				i++
 			}
 		}
