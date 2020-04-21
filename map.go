@@ -18,6 +18,7 @@
 package hessian
 
 import (
+	"fmt"
 	"io"
 	"reflect"
 )
@@ -245,10 +246,9 @@ func (d *Decoder) decMap(flag int32) (interface{}, error) {
 	case tag == BC_REF:
 		return d.decRef(int32(tag))
 	case tag == BC_MAP:
-		//if t, err = d.decType(); err != nil {
-		//	return nil, err
-		//}
-		t, _ = d.decType()
+		if t, err = d.decType(); err != nil {
+			fmt.Println("decType", err, t)
+		}
 		_, ok = checkPOJORegistry(t)
 		if ok {
 			inst = createInstance(t)
