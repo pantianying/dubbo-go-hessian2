@@ -116,6 +116,9 @@ func getArgType(v interface{}) string {
 		case reflect.Map: // Enter here, map may be map[string]int
 			return "java.util.Map"
 		default:
+			if u, ok := v.(POJOEnum); ok {
+				return u.JavaClassName()
+			}
 			return ""
 		}
 	}
